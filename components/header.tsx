@@ -1,0 +1,103 @@
+"use client"
+
+import { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Menu, X, Mountain } from "lucide-react"
+
+export function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md border-b border-border/50">
+      <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <Mountain className="w-6 h-6 text-primary" />
+          <span className="text-xl font-bold tracking-tight text-foreground">SoloSaathi</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          <Link href="#how-it-works" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+            How It Works
+          </Link>
+          <Link href="#matching" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+            Matching
+          </Link>
+          <Link href="#safety" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+            Safety
+          </Link>
+          <Link href="#stories" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+            Stories
+          </Link>
+        </div>
+
+        <div className="hidden md:flex items-center gap-4">
+          <Button variant="ghost" className="text-sm text-foreground/70">
+            Log In
+          </Button>
+          <Link href="/create-profile">
+            <Button className="text-sm bg-primary text-primary-foreground hover:bg-primary/90">
+              Create Profile
+            </Button>
+          </Link>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden text-foreground"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </nav>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-b border-border">
+          <div className="px-6 py-4 flex flex-col gap-4">
+            <Link 
+              href="#how-it-works" 
+              className="text-sm text-foreground/70 hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              How It Works
+            </Link>
+            <Link 
+              href="#matching" 
+              className="text-sm text-foreground/70 hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Matching
+            </Link>
+            <Link 
+              href="#safety" 
+              className="text-sm text-foreground/70 hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Safety
+            </Link>
+            <Link 
+              href="#stories" 
+              className="text-sm text-foreground/70 hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Stories
+            </Link>
+            <div className="flex flex-col gap-2 pt-4 border-t border-border">
+              <Button variant="ghost" className="justify-start text-sm">
+                Log In
+              </Button>
+              <Link href="/create-profile">
+                <Button className="w-full text-sm bg-primary text-primary-foreground">
+                  Create Profile
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  )
+}
