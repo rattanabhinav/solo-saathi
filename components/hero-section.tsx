@@ -43,7 +43,7 @@ export function HeroSection() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <Link href="/create-profile">
+          <Link href="/auth">
             <Button size="lg" className="text-base bg-primary text-primary-foreground hover:bg-primary/90 group shadow-lg shadow-primary/25">
               Create Your Profile
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

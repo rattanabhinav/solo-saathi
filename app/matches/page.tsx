@@ -341,7 +341,7 @@ export default function MatchesPage() {
             </div>
             <h3 className="font-semibold text-foreground mb-2">No matches yet</h3>
             <p className="text-muted-foreground mb-6">Complete your profile to find compatible trekkers</p>
-            <Link href="/create-profile">
+            <Link href="/auth">
               <Button>Create Profile</Button>
             </Link>
           </div>

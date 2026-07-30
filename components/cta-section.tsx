@@ -70,7 +70,7 @@ export function CTASection() {
           {/* Or create profile */}
           <div className="mb-8">
             <p className="text-sm text-muted-foreground mb-3">Or start building your profile now</p>
-            <Link href="/create-profile">
+            <Link href="/auth">
               <Button variant="outline" size="lg" className="bg-white/80 backdrop-blur-sm border-foreground/20 hover:bg-white">
                 Create Your Profile
                 <ArrowRight className="ml-2 h-4 w-4" />

@@ -3,13 +3,16 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowRight, ArrowLeft, Mountain, Sparkles } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase/client"
 
 type ProfileData = {
   name: string
-  instagram: string
+  trekDestination: string
+  phone: string
   city: string
   age: string
   trailStamina: string
@@ -44,7 +47,8 @@ export default function CreateProfilePage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [profile, setProfile] = useState<ProfileData>({
     name: "",
-    instagram: "",
+    trekDestination: "",
+    phone: "",
     city: "",
     age: "",
     trailStamina: "",
@@ -59,6 +63,10 @@ export default function CreateProfilePage() {
     riskTolerance: "",
   })
 
+  const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
   const updateProfile = (key: keyof ProfileData, value: string) => {
     setProfile(prev => ({ ...prev, [key]: value }))
   }
@@ -72,6 +80,43 @@ export default function CreateProfilePage() {
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1)
+    }
+  }
+
+  const saveProfile = async () => {
+    setSaving(true)
+    setSaveError(null)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      router.push("/auth")
+      return
+    }
+
+    const { error } = await supabase.from("profiles").upsert({
+      id: user.id,
+      name: profile.name,
+      age: parseInt(profile.age, 10),
+      city: profile.city,
+      phone: profile.phone,
+      trek_destination: profile.trekDestination,
+      trail_stamina: profile.trailStamina,
+      walking_pace: profile.walkingPace,
+      morning_person: profile.morningPerson,
+      talkative_level: profile.talkativeLevel,
+      music_preference: profile.musicPreference,
+      photography_style: profile.photographyStyle,
+      rest_frequency: profile.restFrequency,
+      dietary_preference: profile.dietaryPreference,
+      smoking_drinking: profile.smokingDrinking,
+      risk_tolerance: profile.riskTolerance,
+    })
+
+    if (error) {
+      setSaveError(error.message)
+      setSaving(false)
+    } else {
+      router.push("/matches")
     }
   }
 
@@ -160,18 +205,35 @@ export default function CreateProfilePage() {
                     className="text-lg py-6"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Instagram handle</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
-                    <Input 
-                      placeholder="your_handle"
-                      value={profile.instagram}
-                      onChange={(e) => updateProfile("instagram", e.target.value)}
-                      className="text-lg py-6 pl-8"
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Trek destination</label>
+                    <Select
+                      value={profile.trekDestination}
+                      onValueChange={(value) => updateProfile("trekDestination", value)}
+                    >
+                      <SelectTrigger className="text-base h-auto py-4">
+                        <SelectValue placeholder="Select trek" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="kheerganga">Kheerganga Trek</SelectItem>
+                        <SelectItem value="triund">Triund Trek</SelectItem>
+                        <SelectItem value="kareri-lake">Kareri Lake Trek</SelectItem>
+                        <SelectItem value="sar-pass">Sar Pass Trek</SelectItem>
+                        <SelectItem value="hampta-pass">Hampta Pass Trek</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Phone</label>
+                    <Input
+                      type="tel"
+                      placeholder="9876543210"
+                      value={profile.phone}
+                      onChange={(e) => updateProfile("phone", e.target.value.replace(/\D/g, "").slice(0, 10))}
+                      className="py-5"
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">Helps matches check out your vibe beforehand</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -429,6 +491,7 @@ export default function CreateProfilePage() {
                 <div className="bg-muted/50 rounded-xl p-6 text-left mb-8">
                   <h3 className="font-semibold text-foreground mb-4">Your Trek Style</h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
+                    <ProfileTag label="Trek" value={profile.trekDestination} />
                     <ProfileTag label="Stamina" value={profile.trailStamina} />
                     <ProfileTag label="Pace" value={profile.walkingPace} />
                     <ProfileTag label="Morning" value={profile.morningPerson} />
@@ -438,12 +501,18 @@ export default function CreateProfilePage() {
                   </div>
                 </div>
 
-                <Link href="/matches">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Find My Matches
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+                {saveError && (
+                  <p className="text-sm text-destructive text-center mb-2">{saveError}</p>
+                )}
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto"
+                  onClick={saveProfile}
+                  disabled={saving}
+                >
+                  {saving ? "Saving your profile…" : "Find My Matches"}
+                  {!saving && <ArrowRight className="ml-2 h-4 w-4" />}
+                </Button>
               </div>
             </StepContainer>
           )}
@@ -529,7 +598,7 @@ function ProfileTag({ label, value }: { label: string; value: string }) {
 function canProceed(step: number, profile: ProfileData): boolean {
   switch (step) {
     case 1:
-      return profile.name.length > 0
+      return profile.name.length > 0 && profile.trekDestination !== ""
     case 2:
       return profile.trailStamina !== ""
     case 3:

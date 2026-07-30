@@ -33,10 +33,12 @@ export function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" className="text-sm text-foreground/70">
-            Log In
-          </Button>
-          <Link href="/create-profile">
+          <Link href="/auth?mode=login">
+            <Button variant="ghost" className="text-sm text-foreground/70">
+              Log In
+            </Button>
+          </Link>
+          <Link href="/auth">
             <Button className="text-sm bg-primary text-primary-foreground hover:bg-primary/90">
               Create Profile
             </Button>
@@ -86,10 +88,12 @@ export function Header() {
               Stories
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border">
-              <Button variant="ghost" className="justify-start text-sm">
-                Log In
-              </Button>
-              <Link href="/create-profile">
+              <Link href="/auth?mode=login" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start text-sm">
+                  Log In
+                </Button>
+              </Link>
+              <Link href="/auth" onClick={() => setIsMenuOpen(false)}>
                 <Button className="w-full text-sm bg-primary text-primary-foreground">
                   Create Profile
                 </Button>
