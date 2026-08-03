@@ -53,7 +53,17 @@ Frontend prototype generated via v0: landing page, profile creation form, matche
 5. Request/accept system between matched users
 
 ## Matching logic (my product decision — don't change without asking)
-Hard filter: trek destination must overlap.
+Hard filter: trek destination must overlap
+
+Logic: 
+- Place 4 options in a sequence with option A and option D at both ends.
+- Generic (5 signals): score them by distance on that scale: same answer = 100, one step off ≈ 67, two steps off ≈ 33, opposite ends = 0
+- Risk appetite: exact match = 100, "flexible" vs any other = 90, for rest one step off ≈ 67, two steps off ≈ 33
+- Dietary: exact match = 100, "flexible" vs any other = 90, vegetarian↔vegan = 67, veg/vegan vs non-veg = 33
+- Smoking/drinking: exact match = 100, neither↔both = 0, "neither" vs smoking/drinking = 33, "both" vs smoking/drinking = 67, smoking↔drinking = 55
+- Breaks: exact match = 100, "go with flow" vs any other = 90, for rest one step off ≈ 67, two steps off ≈ 33
+- Morning/evening: exact match = 100, "flexible" vs any other = 90, for rest one step off ≈ 67, two steps off ≈ 33
+
 Then weighted score:
 1. Stamina: 20%
 2. Pace: 15%
