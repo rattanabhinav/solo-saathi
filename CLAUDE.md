@@ -39,18 +39,8 @@ No test suite exists yet.
 - React 19
 - Tailwind CSS v4 + shadcn/ui
 - Supabase (Postgres, Auth via email, Storage for photos)
-- Deployed on Vercel (later)
+- Deployed on Vercel
 - [Repo on GitHub](https://github.com/rattanabhinav/solo-saathi)
-
-## Current state
-Frontend prototype generated via v0: landing page, profile creation form, matches screen. These are UI-only — no backend wiring yet. Built locally, pushed to GitHub, not yet deployed to Vercel.
-
-## What I'm building next (in order)
-1. Supabase schema + auth setup
-2. Wire profile form to Supabase (real signup/save)
-3. Matching algorithm (see weights below)
-4. Wire matches screen to real data
-5. Request/accept system between matched users
 
 ## Matching logic (my product decision — don't change without asking)
 Hard filter: trek destination must overlap
