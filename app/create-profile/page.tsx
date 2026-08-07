@@ -198,11 +198,11 @@ export default function CreateProfilePage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Your name</label>
-                  <Input 
+                  <Input
                     placeholder="What should we call you?"
                     value={profile.name}
                     onChange={(e) => updateProfile("name", e.target.value)}
-                    className="text-lg py-6"
+                    className="py-6"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -212,7 +212,7 @@ export default function CreateProfilePage() {
                       value={profile.trekDestination}
                       onValueChange={(value) => updateProfile("trekDestination", value)}
                     >
-                      <SelectTrigger className="text-base h-auto py-4">
+                      <SelectTrigger className="text-sm h-auto py-4">
                         <SelectValue placeholder="Select trek" />
                       </SelectTrigger>
                       <SelectContent>

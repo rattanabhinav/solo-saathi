@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Instagram, Twitter, Linkedin, Mountain } from "lucide-react"
+import { Mountain } from "lucide-react"
 
 export function Footer() {
   return (
@@ -13,32 +13,9 @@ export function Footer() {
               <span className="text-2xl font-bold text-foreground">SoloSaathi</span>
             </Link>
             <p className="text-muted-foreground mt-4 max-w-sm">
-              Pre-trip compatibility matching for self-organised solo trekkers. 
+              Pre-trip compatibility matching for self-organised solo trekkers.
               Friends on rent, not co-travellers.
             </p>
-            <div className="flex gap-4 mt-6">
-              <Link 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </Link>
-              <Link 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </Link>
-            </div>
           </div>
 
           {/* Links */}
@@ -61,8 +38,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Pricing
+                <Link href="#stories" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Stories
                 </Link>
               </li>
             </ul>
@@ -74,11 +51,6 @@ export function Footer() {
               <li>
                 <Link href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   About
-                </Link>
-              </li>
-              <li>
-                <Link href="#stories" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Stories
                 </Link>
               </li>
               <li>

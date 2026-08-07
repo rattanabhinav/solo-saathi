@@ -152,7 +152,7 @@ export function CompatibilityCard({
       <CardContent className="p-0">
         <div className="p-5">
           <div className="flex items-start gap-4">
-            <div className="relative">
+            <div className="relative shrink-0">
               <Avatar className="w-16 h-16 border-2 border-white shadow-md">
                 <AvatarImage src="" alt={name} />
                 <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
@@ -165,39 +165,17 @@ export function CompatibilityCard({
             </div>
 
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-foreground truncate">{name}</h3>
-                <span className="text-sm text-muted-foreground">{age}</span>
-                <Badge variant="outline" className="text-xs">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
+                <h3 className="font-semibold text-foreground truncate max-w-full">{name}</h3>
+                <span className="text-sm text-muted-foreground shrink-0">{age}</span>
+                <Badge variant="outline" className="text-xs shrink-0">
                   {city}
                 </Badge>
               </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                <Mountain className="w-3 h-3" />
-                <span>{formatTrekDestination(trekDestination)}</span>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
+                <Mountain className="w-3 h-3 shrink-0" />
+                <span className="truncate">{formatTrekDestination(trekDestination)}</span>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-2 items-end">
-              {actions}
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setExpanded(prev => !prev)}
-                className="gap-1 text-muted-foreground"
-              >
-                {expanded ? (
-                  <>
-                    <ChevronUp className="w-4 h-4" />
-                    Less
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-4 h-4" />
-                    More
-                  </>
-                )}
-              </Button>
             </div>
           </div>
 
@@ -210,6 +188,28 @@ export function CompatibilityCard({
                 +{signals.length - 4} more
               </span>
             )}
+          </div>
+
+          <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-border/50">
+            {actions}
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setExpanded(prev => !prev)}
+              className="gap-1 text-muted-foreground"
+            >
+              {expanded ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  More
+                </>
+              )}
+            </Button>
           </div>
         </div>
 

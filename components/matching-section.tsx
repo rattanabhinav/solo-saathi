@@ -1,16 +1,17 @@
 import { Badge } from "@/components/ui/badge"
-import { 
-  Footprints, 
-  Clock, 
-  Mountain, 
-  Home, 
-  Wallet, 
+import {
+  Footprints,
+  Clock,
+  Mountain,
+  Home,
+  Wallet,
   Utensils,
   Music,
   Laugh,
   AlertTriangle,
   Phone
 } from "lucide-react"
+import Image from "next/image"
 
 const matchingSignals = [
   { icon: Footprints, label: "Trek Stamina", description: "Beginner to expert level" },
@@ -27,8 +28,24 @@ const matchingSignals = [
 
 export function MatchingSection() {
   return (
-    <section id="matching" className="py-24 px-6 bg-secondary/30">
-      <div className="max-w-6xl mx-auto">
+    <section id="matching" className="relative py-24 px-6 overflow-hidden">
+      {/* Background image — on mobile this section stacks into a single tall
+          column, so stretching the image across the full section height
+          (via inset-0) scales it up hugely and crops it to an
+          unrecognisable sliver. Cap the image's own aspect ratio to a band
+          on mobile only; same image, same overlay, unchanged on desktop. */}
+      <div className="absolute inset-x-0 top-0 h-[440px] md:inset-0 md:h-auto">
+        <Image
+          src="/images/hero-bg.png"
+          alt="Himalayan mountain peaks at sunrise"
+          fill
+          className="object-cover object-center"
+        />
+        {/* Overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/50 to-white/90" />
+      </div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Section header */}
         <div className="text-center mb-16">
           <span className="text-sm font-medium text-primary uppercase tracking-wider">Deep Compatibility</span>

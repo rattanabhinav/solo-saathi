@@ -7,21 +7,21 @@ const stories = [
   {
     quote: "Met Priya through SoloSaathi for Kedarkantha. We had the exact same pace and both loved early morning starts. By day 2, it felt like we'd known each other for years.",
     name: "Arjun M.",
-    trek: "Kedarkantha, December 2025",
+    trek: "Kedarkantha, July 2026",
     initials: "AM",
     matchScore: "94%"
   },
   {
     quote: "I was nervous about doing Hampta Pass solo. My match Rohan had done it twice before. His experience plus our matching vibe made it the best trek of my life.",
     name: "Sneha K.",
-    trek: "Hampta Pass, May 2025",
+    trek: "Hampta Pass, June 2026",
     initials: "SK",
     matchScore: "91%"
   },
   {
     quote: "The compatibility matching is real. Same budget, same food preferences, same love for sunset photography. We're planning our third trek together now.",
     name: "Vikram S.",
-    trek: "Valley of Flowers, August 2025",
+    trek: "Valley of Flowers, May 2026",
     initials: "VS",
     matchScore: "97%"
   }
@@ -30,16 +30,21 @@ const stories = [
 export function StoriesSection() {
   return (
     <section id="stories" className="py-24 px-6 bg-muted/30 relative overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0 opacity-10">
+      {/* Background image — on mobile this section stacks 3 story cards
+          into a single tall column, so stretching the image across the
+          full section height (via inset-0) scales it up hugely and crops
+          it to an unrecognisable sliver. Cap the image's own aspect ratio
+          to a band on mobile only; same image, same opacity, unchanged on
+          desktop. */}
+      <div className="absolute inset-x-0 top-0 h-[420px] md:inset-0 md:h-auto opacity-10">
         <Image
           src="/images/trekkers-trail.png"
           alt=""
           fill
-          className="object-cover"
+          className="object-cover object-center"
         />
       </div>
-      
+
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section header */}
         <div className="text-center mb-16">

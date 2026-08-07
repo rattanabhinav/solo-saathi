@@ -11,14 +11,18 @@ export function HeroSection() {
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/hero-bg.png"
-          alt="Himalayan mountain peaks at sunrise"
+          src="/images/trekkers-summit.png"
+          alt="Trekkers celebrating at summit"
           fill
           className="object-cover object-center"
           priority
         />
         {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/50 to-white/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/70 to-white/95" />
+        {/* Extra spotlight behind the text block — the photo is busier than
+            the previous mountain background, so the linear gradient alone
+            left the heading low-contrast against faces/jackets */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_50%_45%,rgba(255,255,255,0.55),transparent_70%)]" />
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 pt-32 pb-20 text-center">
@@ -49,9 +53,11 @@ export function HeroSection() {
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
-          <Button size="lg" variant="outline" className="text-base border-foreground/20 bg-white/60 backdrop-blur-sm hover:bg-white/80">
-            See How It Works
-          </Button>
+          <Link href="#how-it-works">
+            <Button size="lg" variant="outline" className="text-base border-foreground/20 bg-white/60 backdrop-blur-sm hover:bg-white/80">
+              See How It Works
+            </Button>
+          </Link>
         </div>
 
         {/* Stats */}
@@ -77,14 +83,6 @@ export function HeroSection() {
             <span className="text-2xl md:text-3xl font-bold text-foreground">100%</span>
             <span className="text-sm text-foreground/60">ID Verified</span>
           </div>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span className="text-xs text-foreground/60 font-medium">Scroll to explore</span>
-        <div className="w-6 h-10 rounded-full border-2 border-foreground/20 flex items-start justify-center p-2 bg-white/50 backdrop-blur-sm">
-          <div className="w-1 h-2 rounded-full bg-primary animate-bounce" />
         </div>
       </div>
     </section>
