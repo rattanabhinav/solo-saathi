@@ -53,13 +53,13 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-4">
           {!isLoggedIn && (
-            <Link href="/auth?mode=login">
+            <Link href="/create-profile?mode=login">
               <Button variant="ghost" className="text-sm text-foreground/70">
                 Log In
               </Button>
             </Link>
           )}
-          <Link href="/auth">
+          <Link href="/create-profile">
             <Button className="text-sm bg-primary text-primary-foreground hover:bg-primary/90">
               Create Profile
             </Button>
@@ -119,13 +119,13 @@ export function Header() {
             )}
             <div className="flex flex-col gap-2 pt-4 border-t border-border">
               {!isLoggedIn && (
-                <Link href="/auth?mode=login" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/create-profile?mode=login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start text-sm">
                     Log In
                   </Button>
                 </Link>
               )}
-              <Link href="/auth" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/create-profile" onClick={() => setIsMenuOpen(false)}>
                 <Button className="w-full text-sm bg-primary text-primary-foreground">
                   Create Profile
                 </Button>

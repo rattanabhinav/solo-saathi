@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Mountain } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase/client"
+import { completeAuthFlow, getPendingProfile } from "@/lib/profile"
 
 type Mode = "signup" | "login"
 
@@ -23,10 +24,16 @@ function AuthForm() {
   const searchParams = useSearchParams()
   const [mode, setMode] = useState<Mode>(searchParams.get("mode") === "login" ? "login" : "signup")
 
-  // Redirect already-authenticated users straight to profile creation
+  // Redirect already-authenticated users to the right place
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) router.replace("/create-profile")
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      try {
+        const next = await completeAuthFlow(session.user.id)
+        router.replace(next)
+      } catch {
+        // Stay on auth page if profile save failed
+      }
     })
   }, [router])
   const [phase, setPhase] = useState<"form" | "verify-email">("form")
@@ -34,6 +41,11 @@ function AuthForm() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [hasPendingProfile, setHasPendingProfile] = useState(false)
+
+  useEffect(() => {
+    setHasPendingProfile(!!getPendingProfile())
+  }, [])
 
   const switchMode = (next: Mode) => {
     setMode(next)
@@ -47,17 +59,19 @@ function AuthForm() {
       email,
       password,
       options: {
-        // After clicking the confirmation email link, user lands on /create-profile
-        emailRedirectTo: `${window.location.origin}/create-profile`,
+        emailRedirectTo: `${window.location.origin}/auth`,
       },
     })
     if (error) {
       setError(error.message)
     } else if (data.session) {
-      // Email confirmation is disabled in Supabase — signed in immediately
-      router.push("/create-profile")
+      try {
+        const next = await completeAuthFlow(data.session.user.id)
+        router.push(next)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to save profile")
+      }
     } else {
-      // Email confirmation required — show check-your-email screen
       setPhase("verify-email")
     }
     setLoading(false)
@@ -66,11 +80,16 @@ function AuthForm() {
   const handleLogin = async () => {
     setLoading(true)
     setError(null)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       setError(error.message)
-    } else {
-      router.push("/create-profile")
+    } else if (data.session) {
+      try {
+        const next = await completeAuthFlow(data.session.user.id)
+        router.push(next)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to save profile")
+      }
     }
     setLoading(false)
   }
@@ -120,9 +139,11 @@ function AuthForm() {
               {mode === "signup" ? "Create your account" : "Welcome back"}
             </h1>
             <p className="text-muted-foreground">
-              {mode === "signup"
-                ? "Join solo trekkers finding their trail companions"
-                : "Log in to find your trail companions"}
+              {hasPendingProfile
+                ? "One last step — create an account to save your profile and see your matches"
+                : mode === "signup"
+                  ? "Join solo trekkers finding their trail companions"
+                  : "Log in to find your trail companions"}
             </p>
           </div>
 
@@ -160,8 +181,8 @@ function AuthForm() {
             size="lg"
           >
             {loading
-              ? (mode === "signup" ? "Creating account…" : "Logging in…")
-              : (mode === "signup" ? "Create Account" : "Log In")}
+              ? (hasPendingProfile ? "Saving profile…" : mode === "signup" ? "Creating account…" : "Logging in…")
+              : (hasPendingProfile ? "Save Profile & Find Matches" : mode === "signup" ? "Create Account" : "Log In")}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">

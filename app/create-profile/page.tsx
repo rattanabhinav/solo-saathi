@@ -1,31 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowRight, ArrowLeft, Mountain, Sparkles } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
-
-type ProfileData = {
-  name: string
-  trekDestination: string
-  phone: string
-  city: string
-  age: string
-  trailStamina: string
-  walkingPace: string
-  morningPerson: string
-  talkativeLevel: string
-  musicPreference: string
-  photographyStyle: string
-  restFrequency: string
-  dietaryPreference: string
-  smokingDrinking: string
-  riskTolerance: string
-}
+import {
+  type ProfileData,
+  savePendingProfile,
+  saveProfileToSupabase,
+} from "@/lib/profile"
 
 const steps = [
   { id: "intro", title: "Welcome" },
@@ -44,6 +31,16 @@ const steps = [
 ]
 
 export default function CreateProfilePage() {
+  return (
+    <Suspense fallback={null}>
+      <CreateProfileForm />
+    </Suspense>
+  )
+}
+
+function CreateProfileForm() {
+  const searchParams = useSearchParams()
+  const authMode = searchParams.get("mode") === "login" ? "login" : "signup"
   const [currentStep, setCurrentStep] = useState(0)
   const [profile, setProfile] = useState<ProfileData>({
     name: "",
@@ -83,37 +80,22 @@ export default function CreateProfilePage() {
     }
   }
 
-  const saveProfile = async () => {
+  const handleFinish = async () => {
     setSaving(true)
     setSaveError(null)
 
     const { data: { user } } = await supabase.auth.getUser()
+
     if (!user) {
-      router.push("/auth")
+      savePendingProfile(profile)
+      router.push(authMode === "login" ? "/auth?mode=login" : "/auth")
       return
     }
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id,
-      name: profile.name,
-      age: parseInt(profile.age, 10),
-      city: profile.city,
-      phone: profile.phone,
-      trek_destination: profile.trekDestination,
-      trail_stamina: profile.trailStamina,
-      walking_pace: profile.walkingPace,
-      morning_person: profile.morningPerson,
-      talkative_level: profile.talkativeLevel,
-      music_preference: profile.musicPreference,
-      photography_style: profile.photographyStyle,
-      rest_frequency: profile.restFrequency,
-      dietary_preference: profile.dietaryPreference,
-      smoking_drinking: profile.smokingDrinking,
-      risk_tolerance: profile.riskTolerance,
-    })
+    const { error } = await saveProfileToSupabase(user.id, profile)
 
     if (error) {
-      setSaveError(error.message)
+      setSaveError(error)
       setSaving(false)
     } else {
       router.push("/matches")
@@ -484,7 +466,7 @@ export default function CreateProfilePage() {
                   {"You're all set, " + (profile.name || "trekker") + "!"}
                 </h1>
                 <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                  {"Your profile is ready. Now let's find some compatible companions for your next adventure."}
+                  {"Almost there! Create a free account to save your profile and find compatible companions."}
                 </p>
                 
                 {/* Profile summary */}
@@ -507,10 +489,10 @@ export default function CreateProfilePage() {
                 <Button
                   size="lg"
                   className="w-full sm:w-auto"
-                  onClick={saveProfile}
+                  onClick={handleFinish}
                   disabled={saving}
                 >
-                  {saving ? "Saving your profile…" : "Find My Matches"}
+                  {saving ? "Saving your profile…" : authMode === "login" ? "Continue to Log In" : "Continue to Sign Up"}
                   {!saving && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>
               </div>

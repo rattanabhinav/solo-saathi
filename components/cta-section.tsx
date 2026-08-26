@@ -15,7 +15,7 @@ export function CTASection() {
 
           {/* Create profile */}
           <div className="mb-8">
-            <Link href="/auth">
+            <Link href="/create-profile">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 group shadow-lg shadow-primary/20">
                 Create Your Profile
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
