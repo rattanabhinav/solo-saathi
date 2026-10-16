@@ -13,6 +13,12 @@ import {
   savePendingProfile,
   saveProfileToSupabase,
 } from "@/lib/profile"
+import {
+  type ProfileQuestion,
+  type QuestionOption,
+  PROFILE_QUESTIONS,
+  TREK_DESTINATIONS,
+} from "@/lib/profile-questions"
 
 const steps = [
   { id: "intro", title: "Welcome" },
@@ -198,11 +204,9 @@ function CreateProfileForm() {
                         <SelectValue placeholder="Select trek" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="kheerganga">Kheerganga Trek</SelectItem>
-                        <SelectItem value="triund">Triund Trek</SelectItem>
-                        <SelectItem value="kareri-lake">Kareri Lake Trek</SelectItem>
-                        <SelectItem value="sar-pass">Sar Pass Trek</SelectItem>
-                        <SelectItem value="hampta-pass">Hampta Pass Trek</SelectItem>
+                        {TREK_DESTINATIONS.map((trek) => (
+                          <SelectItem key={trek.value} value={trek.value}>{trek.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -242,214 +246,36 @@ function CreateProfileForm() {
             </StepContainer>
           )}
 
-          {/* Step: Trail Stamina */}
+          {/* Question steps — content lives in lib/profile-questions.ts */}
           {currentStep === 2 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="🏔️"
-                title="How would you describe your trail stamina?"
-                subtitle="Be honest — matching with someone at a different level can make or break a trek"
-              />
-              <OptionGrid
-                options={[
-                  { value: "beginner", label: "Just Starting", description: "Easy trails, 5-8 km/day is my sweet spot" },
-                  { value: "moderate", label: "Building Up", description: "Moderate trails, 10-15 km/day works for me" },
-                  { value: "experienced", label: "Pretty Fit", description: "Challenging trails, 15-20 km/day, no problem" },
-                  { value: "advanced", label: "Beast Mode", description: "Tough trails, 20+ km/day, bring it on" },
-                ]}
-                selected={profile.trailStamina}
-                onSelect={(value) => updateProfile("trailStamina", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.stamina} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Walking Pace */}
           {currentStep === 3 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="🚶"
-                title="What's your natural walking pace?"
-                subtitle="Some like to cruise, others like to race — neither is wrong"
-              />
-              <OptionGrid
-                options={[
-                  { value: "slow", label: "Slow & Steady", description: "I like to soak it all in, no rush" },
-                  { value: "moderate", label: "Moderate", description: "Comfortable pace with time to enjoy" },
-                  { value: "brisk", label: "Brisk Walker", description: "I like to cover ground efficiently" },
-                  { value: "fast", label: "Speed Demon", description: "Let's push it, time is precious" },
-                ]}
-                selected={profile.walkingPace}
-                onSelect={(value) => updateProfile("walkingPace", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.pace} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Morning Person */}
           {currentStep === 4 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="🌅"
-                title="Early bird or night owl?"
-                subtitle="Trek start times can be a dealbreaker"
-              />
-              <OptionGrid
-                options={[
-                  { value: "early", label: "Early Bird", description: "4-5 AM starts? I'm already stretching" },
-                  { value: "moderate", label: "Normal Human", description: "6-7 AM is reasonable, thanks" },
-                  { value: "late", label: "Night Owl", description: "Can we start after breakfast?" },
-                  { value: "flexible", label: "Flexible", description: "I can adapt to whatever works" },
-                ]}
-                selected={profile.morningPerson}
-                onSelect={(value) => updateProfile("morningPerson", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.morning} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Social Vibe */}
           {currentStep === 5 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="💬"
-                title="How chatty are you on the trail?"
-                subtitle="Some love deep conversations, others prefer peaceful silence"
-              />
-              <OptionGrid
-                options={[
-                  { value: "quiet", label: "Quiet Companion", description: "I enjoy peaceful silence and my thoughts" },
-                  { value: "occasional", label: "Occasional Chat", description: "A few words here and there is nice" },
-                  { value: "chatty", label: "Love to Talk", description: "Let's share stories and get to know each other" },
-                  { value: "very-chatty", label: "Non-Stop Chat", description: "I can talk about everything under the sun" },
-                ]}
-                selected={profile.talkativeLevel}
-                onSelect={(value) => updateProfile("talkativeLevel", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.chat} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Music */}
           {currentStep === 6 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="🎵"
-                title="Music on the trail?"
-                subtitle="This is surprisingly divisive"
-              />
-              <OptionGrid
-                options={[
-                  { value: "no-music", label: "Nature Only", description: "I prefer natural sounds, no music please" },
-                  { value: "earphones", label: "Earphones Only", description: "I'll listen to mine, you listen to yours" },
-                  { value: "shared-soft", label: "Soft Background", description: "Some gentle tunes for the group" },
-                  { value: "shared-loud", label: "Speaker Party", description: "Let's make some noise!" },
-                ]}
-                selected={profile.musicPreference}
-                onSelect={(value) => updateProfile("musicPreference", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.music} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Photography */}
           {currentStep === 7 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="📸"
-                title="How often do you stop for photos?"
-                subtitle="Instagram vs Insta-gone"
-              />
-              <OptionGrid
-                options={[
-                  { value: "minimal", label: "Rarely", description: "Maybe at the summit, that's it" },
-                  { value: "occasional", label: "Occasionally", description: "At scenic spots, but let's keep moving" },
-                  { value: "frequent", label: "Frequently", description: "I need those shots for the gram" },
-                  { value: "constant", label: "Photo First", description: "Every angle, every moment, documented" },
-                ]}
-                selected={profile.photographyStyle}
-                onSelect={(value) => updateProfile("photographyStyle", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.photos} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Rest Stops */}
           {currentStep === 8 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="☕"
-                title="How often do you like to take breaks?"
-                subtitle="Everyone needs rest, but frequency varies"
-              />
-              <OptionGrid
-                options={[
-                  { value: "minimal", label: "Power Through", description: "One or two stops max, keep pushing" },
-                  { value: "normal", label: "Regular Breaks", description: "Every hour or so works for me" },
-                  { value: "frequent", label: "Frequent Stops", description: "I like to rest often and enjoy the views" },
-                  { value: "flexible", label: "Go With Flow", description: "Whatever the group needs" },
-                ]}
-                selected={profile.restFrequency}
-                onSelect={(value) => updateProfile("restFrequency", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.breaks} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Food & Diet */}
           {currentStep === 9 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="🍽️"
-                title="Any dietary preferences?"
-                subtitle="Good to know for shared meals and planning"
-              />
-              <OptionGrid
-                options={[
-                  { value: "vegetarian", label: "Vegetarian", description: "No meat or fish for me" },
-                  { value: "vegan", label: "Vegan", description: "Plant-based all the way" },
-                  { value: "non-veg", label: "Non-Vegetarian", description: "I eat everything" },
-                  { value: "flexible", label: "Flexible", description: "I can adapt to what's available" },
-                ]}
-                selected={profile.dietaryPreference}
-                onSelect={(value) => updateProfile("dietaryPreference", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.dietary} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Smoking/Drinking */}
           {currentStep === 10 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="🍺"
-                title="Smoking or drinking on treks?"
-                subtitle="No judgment, just preferences"
-              />
-              <OptionGrid
-                options={[
-                  { value: "neither", label: "Neither", description: "I prefer to keep it clean on trails" },
-                  { value: "drink-only", label: "Social Drinker", description: "A drink at camp is nice" },
-                  { value: "smoke-only", label: "Occasional Smoker", description: "I might light up occasionally" },
-                  { value: "both", label: "Both Okay", description: "I'm open to either" },
-                ]}
-                selected={profile.smokingDrinking}
-                onSelect={(value) => updateProfile("smokingDrinking", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.habits} profile={profile} onSelect={updateProfile} />
           )}
-
-          {/* Step: Risk Tolerance */}
           {currentStep === 11 && (
-            <StepContainer>
-              <QuestionHeader 
-                emoji="⚡"
-                title="How do you handle risk on the trail?"
-                subtitle="Weather turns bad, path looks sketchy — what do you do?"
-              />
-              <OptionGrid
-                options={[
-                  { value: "cautious", label: "Play It Safe", description: "Better to turn back than risk it" },
-                  { value: "moderate", label: "Balanced", description: "Assess the situation, decide together" },
-                  { value: "adventurous", label: "Push Boundaries", description: "A little risk makes it exciting" },
-                  { value: "flexible", label: "Group Decision", description: "I'll go with what the group decides" },
-                ]}
-                selected={profile.riskTolerance}
-                onSelect={(value) => updateProfile("riskTolerance", value)}
-              />
-            </StepContainer>
+            <QuestionStep question={PROFILE_QUESTIONS.risk} profile={profile} onSelect={updateProfile} />
           )}
 
           {/* Step: Complete */}
@@ -538,12 +364,33 @@ function QuestionHeader({ emoji, title, subtitle }: { emoji: string; title: stri
   )
 }
 
-function OptionGrid({ 
-  options, 
-  selected, 
-  onSelect 
-}: { 
-  options: { value: string; label: string; description: string }[]
+function QuestionStep({
+  question,
+  profile,
+  onSelect,
+}: {
+  question: ProfileQuestion
+  profile: ProfileData
+  onSelect: (key: keyof ProfileData, value: string) => void
+}) {
+  return (
+    <StepContainer>
+      <QuestionHeader emoji={question.emoji} title={question.title} subtitle={question.subtitle} />
+      <OptionGrid
+        options={question.options}
+        selected={profile[question.field]}
+        onSelect={(value) => onSelect(question.field, value)}
+      />
+    </StepContainer>
+  )
+}
+
+function OptionGrid({
+  options,
+  selected,
+  onSelect
+}: {
+  options: QuestionOption[]
   selected: string
   onSelect: (value: string) => void
 }) {
