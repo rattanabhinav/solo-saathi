@@ -28,6 +28,7 @@ npm run dev        # Start dev server (Next.js on localhost:3000)
 npm run build      # Production build
 npm start          # Serve production build
 npx tsc --noEmit   # Type-check — builds skip type errors, so run this before committing
+npm run vibe:preview  # Print AI Vibe Summaries for sample pairs (real Claude calls, ~$0.03/run; `-- 3` for one pair, `-- --prompt` to see the prompt)
 ```
 
 Use **npm** — `package-lock.json` is the only lock file. Don't use pnpm or yarn; they'd create a second, conflicting lock file

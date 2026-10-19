@@ -21,13 +21,13 @@
 -- browser (no direct reads or writes); the server route calls the two
 -- functions with the logged-in user's token, so auth.uid() is that user,
 -- and both functions re-check the pair is a real match first — same trek
--- and at least 50% compatible (is_vibe_eligible below).
+-- and at least 70% compatible (is_vibe_eligible below).
 --
 -- What leaves the database for the AI: the match's first name, both
 -- cities, the trek, both people's 10 matching answers, and the scores.
 -- Never phone, email, age or full name.
 --
--- The 50% threshold is also in lib/vibe/config.ts (VIBE_SUMMARY_MIN_SCORE)
+-- The 70% threshold is also in lib/vibe/config.ts (VIBE_SUMMARY_MIN_SCORE)
 -- so the matches page knows which cards to ask for — keep the two in sync.
 
 create table if not exists public.vibe_summaries (
@@ -48,7 +48,7 @@ revoke all on public.vibe_summaries from public, anon, authenticated;
 
 -- ---------------------------------------------------------------------
 -- The one rule for who gets a Vibe Summary: same trek (the same hard
--- filter match_trekkers uses) and an overall score of at least 50.
+-- filter match_trekkers uses) and an overall score of at least 70.
 -- Internal helper only — not callable from the browser.
 -- ---------------------------------------------------------------------
 drop function if exists is_vibe_eligible(uuid, uuid);
@@ -68,7 +68,7 @@ as $$
     where me.id = p_viewer_id
       and me.id <> them.id
       and me.trek_destination = them.trek_destination
-      and cs.overall_score >= 50
+      and cs.overall_score >= 70
   );
 $$;
 
@@ -207,7 +207,7 @@ begin
   end if;
 
   if not is_vibe_eligible(auth.uid(), p_match_id) then
-    raise exception 'Vibe summaries are only for same-trek matches of 50%% or more';
+    raise exception 'Vibe summaries are only for same-trek matches of 70%% or more';
   end if;
 
   if p_summary is null or length(btrim(p_summary)) = 0 or length(p_summary) > 1500 then
