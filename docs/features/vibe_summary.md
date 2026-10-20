@@ -29,7 +29,7 @@
 - Highlight strongest compatibility factors ("you both tend to wait and analyse the situation with calmness when things go south")
 - Try to flag atleast 1 possible friction point in every summary, not to discourage but to place correct expectations
 
-## Output Structure
+## Output Structure 
 3-4 sentences, 50-80 words
 1. The strongest compatibility matching signal and what it means on the trek
 2. The secondary signals
