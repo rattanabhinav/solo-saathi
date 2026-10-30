@@ -133,6 +133,7 @@ export function CompatibilityCard({
   signals,
   actions,
   expandedFooter,
+  vibeSummary,
 }: {
   name: string
   age: number
@@ -142,6 +143,8 @@ export function CompatibilityCard({
   signals: MatchSignal[]
   /** Rendered top-right, next to the More/Less toggle (e.g. Connect, Accept/Decline, email copy). */
   actions?: React.ReactNode
+  /** Optional "Why you may vibe" panel, shown between the signal pills and the actions row. */
+  vibeSummary?: React.ReactNode
   /** Optional full-width content at the bottom of the expanded panel (e.g. a repeated CTA). */
   expandedFooter?: React.ReactNode
 }) {
@@ -190,7 +193,9 @@ export function CompatibilityCard({
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-border/50">
+          {vibeSummary && <div className="mt-4">{vibeSummary}</div>}
+
+          <div className="flex items-center justify-end gap-2 mt-4 pt-4">
             {actions}
             <Button
               size="sm"

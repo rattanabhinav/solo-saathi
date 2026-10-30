@@ -43,6 +43,9 @@ No test suite exists yet
 - Tailwind CSS v4 + shadcn/ui
 - Supabase: Postgres + email/password auth
 - Matching and connection-request logic are Postgres functions (SQL in `supabase/migrations/`), called from the browser via `supabase.rpc()`
+- Claude API (`@anthropic-ai/sdk`) for AI features — model `claude-sonnet-5-5`, set in `lib/vibe/config.ts`
+- Server code: one API route, `app/api/vibe-summary/route.ts`. It calls Claude server-side and talks to Supabase as the logged-in user (their token, never the admin/service-role key)
+- `ANTHROPIC_API_KEY` must be set in `.env.local` and in Vercel's environment variables. Server-only — never prefix it with `NEXT_PUBLIC_`
 - Deployed on Vercel
 - [Repo on GitHub](https://github.com/rattanabhinav/solo-saathi)
 
@@ -62,3 +65,4 @@ No test suite exists yet
 
 ## AI Features
 1. Vibe Summary - @docs/features/vibe_summary.md
+   - Code: `lib/vibe/` (prompt, Claude call, config), `app/api/vibe-summary/route.ts`, `components/vibe-summary.tsx`; SQL in `supabase/migrations/vibe_summaries.sql`

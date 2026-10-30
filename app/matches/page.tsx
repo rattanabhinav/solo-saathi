@@ -8,6 +8,9 @@ import { Mountain, ArrowLeft, Heart, MessageCircle, Check, Inbox } from "lucide-
 import Link from "next/link"
 import { supabase } from "@/lib/supabase/client"
 import { CompatibilityCard, buildSignals, type MatchSignal } from "@/components/compatibility-card"
+import { VibeSummary } from "@/components/vibe-summary"
+import { VIBE_SUMMARY_MIN_SCORE } from "@/lib/vibe/config"
+import { loadVibeSummaries, type VibeState } from "@/lib/vibe/fetch-summaries"
 
 type Match = {
   id: string
@@ -31,10 +34,16 @@ export default function MatchesPage() {
   const [filter, setFilter] = useState<FilterKey>("all")
   const [sendingTo, setSendingTo] = useState<string | null>(null)
   const [sendError, setSendError] = useState<string | null>(null)
+  const [vibes, setVibes] = useState<Record<string, VibeState>>({})
 
   useEffect(() => {
+    // Set when the page unmounts (or React's dev mode re-runs this effect), so
+    // a stale run stops instead of requesting Vibe Summaries a second time.
+    let cancelled = false
+
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
+      if (cancelled) return
       if (!user) {
         router.replace("/auth")
         return
@@ -45,6 +54,7 @@ export default function MatchesPage() {
         supabase.rpc("match_trekkers", { requesting_user_id: user.id }),
         supabase.rpc("get_my_connection_requests"),
       ])
+      if (cancelled) return
 
       if (meError) {
         setError(meError.message)
@@ -67,23 +77,45 @@ export default function MatchesPage() {
           .map((r: { other_id: string }) => r.other_id)
       )
 
+      const loaded: Match[] = (rows ?? []).map((row: Record<string, number | string>) => ({
+        id: row.match_id as string,
+        name: row.name as string,
+        age: row.age as number,
+        city: row.city as string,
+        trekDestination: row.trek_destination as string,
+        overallScore: row.overall_score as number,
+        connectionSent: alreadySent.has(row.match_id as string),
+        signals: buildSignals(row),
+      }))
+
       setMyProfile({ city: me.city, trekDestination: me.trek_destination })
-      setMatches(
-        (rows ?? []).map((row: Record<string, number | string>) => ({
-          id: row.match_id as string,
-          name: row.name as string,
-          age: row.age as number,
-          city: row.city as string,
-          trekDestination: row.trek_destination as string,
-          overallScore: row.overall_score as number,
-          connectionSent: alreadySent.has(row.match_id as string),
-          signals: buildSignals(row),
-        }))
-      )
+      setMatches(loaded)
       setLoading(false)
+
+      // Vibe Summaries load in the background once the list is on screen:
+      // 70%+ matches only, highest score first so the top cards fill first.
+      const eligible = loaded
+        .filter((match) => Number(match.overallScore) >= VIBE_SUMMARY_MIN_SCORE)
+        .sort((a, b) => b.overallScore - a.overallScore)
+        .map((match) => match.id)
+      if (eligible.length === 0) return
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (cancelled || !session) return
+
+      setVibes(Object.fromEntries(eligible.map((id) => [id, { status: "loading" }])))
+      loadVibeSummaries(
+        eligible,
+        session.access_token,
+        (matchId, state) => setVibes((prev) => ({ ...prev, [matchId]: state })),
+        () => cancelled
+      )
     }
 
     load()
+    return () => {
+      cancelled = true
+    }
   }, [router])
 
   const sendConnection = async (matchId: string) => {
@@ -179,6 +211,7 @@ export default function MatchesPage() {
                 trekDestination={match.trekDestination}
                 overallScore={match.overallScore}
                 signals={match.signals}
+                vibeSummary={vibePanel(vibes[match.id])}
                 actions={
                   match.connectionSent ? (
                     <Button size="sm" variant="outline" disabled className="gap-1">
@@ -233,6 +266,12 @@ export default function MatchesPage() {
       </main>
     </div>
   )
+}
+
+// No panel for matches under 70%, or when a summary couldn't be written.
+function vibePanel(state: VibeState | undefined) {
+  if (!state || state.status === "unavailable") return undefined
+  return <VibeSummary summary={state.status === "ready" ? state.summary : null} />
 }
 
 function FilterBadge({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
