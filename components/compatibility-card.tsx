@@ -76,14 +76,14 @@ function getScoreTier(score: number): "high" | "mid" | "low" {
 
 function SignalPill({ signal }: { signal: MatchSignal }) {
   const colors = {
-    high: "bg-green-100 text-green-700 border-green-200",
-    mid: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    low: "bg-red-100 text-red-700 border-red-200",
+    high: "bg-[#E7F7EE] text-[#166A3A] border-[#BDEBD0]",
+    mid: "bg-[#FEF7D7] text-[#8A5208] border-[#F3E1A0]",
+    low: "bg-[#FDEAEA] text-[#B42318] border-[#F6C6C6]",
   }
 
   return (
-    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${colors[getScoreTier(signal.score)]}`}>
-      <signal.icon className="w-3 h-3" />
+    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] border whitespace-nowrap ${colors[getScoreTier(signal.score)]}`}>
+      <signal.icon className="size-3.5" />
       <span>{signal.label}</span>
       <span className="font-bold">{Math.round(signal.score)}%</span>
     </div>
@@ -92,31 +92,31 @@ function SignalPill({ signal }: { signal: MatchSignal }) {
 
 function SignalRow({ signal }: { signal: MatchSignal }) {
   const textColors = {
-    high: "text-green-600",
-    mid: "text-yellow-600",
-    low: "text-red-600",
+    high: "text-[#1F7A44]",
+    mid: "text-[#A2650A]",
+    low: "text-[#C42B1F]",
   }
   const barColors = {
-    high: "bg-green-500",
-    mid: "bg-yellow-500",
-    low: "bg-red-500",
+    high: "bg-[linear-gradient(90deg,#2FA05A,#7BD66B)]",
+    mid: "bg-[linear-gradient(90deg,#F0A92E,#FFC15E)]",
+    low: "bg-[linear-gradient(90deg,#E0453A,#FF7A59)]",
   }
   const tier = getScoreTier(signal.score)
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-2 w-40">
-        <signal.icon className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm text-foreground">{signal.label}</span>
+    <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 w-40 sm:w-[180px] shrink-0">
+        <signal.icon className="size-[18px] shrink-0 text-[#4A5F5B]" />
+        <span className="text-[15px] text-[#1F2D2A]">{signal.label}</span>
       </div>
       <div className="flex-1 flex items-center gap-3">
-        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+        <div className="flex-1 h-2 bg-[#E3EAEF] rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all ${barColors[tier]}`}
             style={{ width: `${signal.score}%` }}
           />
         </div>
-        <span className={`text-sm font-semibold w-12 text-right ${textColors[tier]}`}>
+        <span className={`text-[15px] font-bold w-[46px] text-right ${textColors[tier]}`}>
           {Math.round(signal.score)}%
         </span>
       </div>
@@ -151,66 +151,67 @@ export function CompatibilityCard({
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <Card className="overflow-hidden border-border shadow-sm hover:shadow-md transition-shadow">
+    <Card className="gap-0 py-0 overflow-hidden rounded-[22px] border-0 text-forest shadow-[0_18px_40px_rgba(11,26,60,0.12)] hover:shadow-[0_22px_48px_rgba(11,26,60,0.16)] transition-shadow">
       <CardContent className="p-0">
-        <div className="p-5">
-          <div className="flex items-start gap-4">
-            <div className="relative shrink-0">
-              <Avatar className="w-16 h-16 border-2 border-white shadow-md">
+        <div className="p-6 flex flex-col gap-3.5">
+          <div className="flex items-start gap-[18px]">
+            {/* Avatar inside a marigold → lime ring, score badge below it */}
+            <div className="relative shrink-0 size-16 rounded-full p-[3px] bg-[linear-gradient(135deg,#FFC15E,#B8F26B)]">
+              <Avatar className="size-full">
                 <AvatarImage src="" alt={name} />
-                <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
+                <AvatarFallback className="bg-[#E3F2EC] text-meadow text-xl font-bold">
                   {name.split(" ").map(n => n[0]).join("")}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full shadow">
+              <div className="absolute left-1/2 -bottom-[9px] -translate-x-1/2 whitespace-nowrap bg-meadow text-white text-xs font-bold px-[9px] py-0.5 rounded-full border-2 border-white">
                 {overallScore}%
               </div>
             </div>
 
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-1">
-                <h3 className="font-semibold text-foreground truncate max-w-full">{name}</h3>
-                <span className="text-sm text-muted-foreground shrink-0">{age}</span>
-                <Badge variant="outline" className="text-xs shrink-0">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                <h3 className="text-lg font-bold truncate max-w-full">{name}</h3>
+                <span className="text-[15px] text-gray-500 shrink-0">{age}</span>
+                <Badge variant="outline" className="text-[13px] font-normal px-2.5 py-0.5 rounded-full border-gray-300 shrink-0">
                   {city}
                 </Badge>
               </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
-                <Mountain className="w-3 h-3 shrink-0" />
+              <div className="flex items-center gap-1.5 mt-1.5 text-sm text-gray-500 min-w-0">
+                <Mountain className="size-[15px] shrink-0" />
                 <span className="truncate">{formatTrekDestination(trekDestination)}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-1">
             {getQuickSignals(signals).map((signal) => (
               <SignalPill key={signal.key} signal={signal} />
             ))}
             {signals.length > 4 && (
-              <span className="text-xs text-muted-foreground self-center">
+              <span className="text-sm text-gray-500 self-center">
                 +{signals.length - 4} more
               </span>
             )}
           </div>
 
-          {vibeSummary && <div className="mt-4">{vibeSummary}</div>}
+          {vibeSummary && <div>{vibeSummary}</div>}
 
-          <div className="flex items-center justify-end gap-2 mt-4 pt-4">
+          <div className="flex items-center justify-end gap-2 sm:gap-2.5">
             {actions}
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setExpanded(prev => !prev)}
-              className="gap-1 text-muted-foreground"
+              className="h-10 sm:h-11 px-2 sm:px-2.5 has-[>svg]:px-2 sm:has-[>svg]:px-2.5 gap-1 sm:gap-1.5 text-sm sm:text-[15px] text-gray-600 hover:bg-gray-100 hover:text-gray-900"
             >
               {expanded ? (
                 <>
-                  <ChevronUp className="w-4 h-4" />
+                  <ChevronUp className="size-4 sm:size-5" />
                   Less
                 </>
               ) : (
                 <>
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="size-4 sm:size-5" />
                   More
                 </>
               )}
@@ -219,9 +220,11 @@ export function CompatibilityCard({
         </div>
 
         {expanded && (
-          <div className="border-t border-border bg-muted/30 p-5 animate-in slide-in-from-top-2 duration-300">
-            <h4 className="text-sm font-medium text-foreground mb-4">Compatibility Breakdown</h4>
-            <div className="grid gap-3">
+          <div className="border-t border-[#E5E9EF] bg-[#F7FAFC] px-6 py-[22px] animate-in slide-in-from-top-2 duration-300">
+            <h4 className="type-display text-xl tracking-[0.02em] mb-4">Compatibility Breakdown</h4>
+            {/* One column on phones; on wider screens two columns of 5
+                (the 10 signals in SIGNAL_DEFS), filled top to bottom */}
+            <div className="grid gap-3 md:grid-cols-2 md:grid-rows-5 md:grid-flow-col md:gap-x-10">
               {signals.map((signal) => (
                 <SignalRow key={signal.key} signal={signal} />
               ))}

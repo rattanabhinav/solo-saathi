@@ -4,9 +4,10 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Mountain, ArrowLeft, Heart, MessageCircle, Check, Inbox } from "lucide-react"
+import { Mountain, Heart, MessageCircle, Check } from "lucide-react"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase/client"
+import { AppHeader } from "@/components/app-header"
 import { CompatibilityCard, buildSignals, type MatchSignal } from "@/components/compatibility-card"
 import { VibeSummary } from "@/components/vibe-summary"
 import { VIBE_SUMMARY_MIN_SCORE } from "@/lib/vibe/config"
@@ -24,6 +25,8 @@ type Match = {
 }
 
 type FilterKey = "all" | "80plus" | "same-trek" | "same-city"
+
+const actionButtonClass = "h-10 sm:h-11 px-3 sm:px-5 has-[>svg]:px-3 sm:has-[>svg]:px-5 rounded-xl gap-1.5 sm:gap-2 text-sm sm:text-[15px] font-bold"
 
 export default function MatchesPage() {
   const router = useRouter()
@@ -150,44 +153,36 @@ export default function MatchesPage() {
     .sort((a, b) => b.overallScore - a.overallScore)
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="p-2 -ml-2 hover:bg-muted rounded-lg transition-colors">
-              <ArrowLeft className="w-5 h-5 text-foreground" />
-            </Link>
-            <div>
-              <h1 className="font-bold text-foreground">Your Matches</h1>
-              <p className="text-sm text-muted-foreground">{visibleMatches.length} compatible trekkers found</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link href="/requests" className="p-2 hover:bg-muted rounded-lg transition-colors" aria-label="Connection requests">
-              <Inbox className="w-5 h-5 text-foreground" />
-            </Link>
-            <Link href="/" className="flex items-center gap-2 ml-1">
-              <Mountain className="w-6 h-6 text-primary" />
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className="bg-app-daylight min-h-screen text-forest">
+      {/* Header + filter bar, pinned together while you scroll (as before) */}
+      <div className="sticky top-0 z-50">
+        <AppHeader backHref="/" title="Your Matches" subtitle={`${visibleMatches.length} compatible trekkers found`}>
+          <Link
+            href="/requests"
+            className="shrink-0 min-h-9 sm:min-h-10 px-2.5 sm:px-4 rounded-full bg-white/14 border border-white/45 inline-flex items-center text-xs sm:text-sm font-semibold whitespace-nowrap hover:bg-white/25 transition-colors"
+          >
+            My Requests
+          </Link>
+          <Link href="/" aria-label="SoloSaathi home" className="shrink-0 flex items-center ml-1">
+            <Mountain className="size-6 sm:size-7 text-lime" />
+          </Link>
+        </AppHeader>
 
-      {/* Filter bar */}
-      <div className="sticky top-[73px] z-40 bg-background border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-3 overflow-x-auto">
-          <FilterBadge label="All Matches" active={filter === "all"} onClick={() => setFilter("all")} />
-          <FilterBadge label="80%+ Match" active={filter === "80plus"} onClick={() => setFilter("80plus")} />
-          <FilterBadge label="Same Trek" active={filter === "same-trek"} onClick={() => setFilter("same-trek")} />
-          <FilterBadge label="Same City" active={filter === "same-city"} onClick={() => setFilter("same-city")} />
+        {/* Filter bar */}
+        <div className="bg-[#EAF5FB] border-b border-[#D5E0DC]/70">
+          <div className="max-w-[1008px] mx-auto px-6 py-2.5 flex items-center gap-2.5 overflow-x-auto">
+            <FilterBadge label="All Matches" active={filter === "all"} onClick={() => setFilter("all")} />
+            <FilterBadge label="80%+ Match" active={filter === "80plus"} onClick={() => setFilter("80plus")} />
+            <FilterBadge label="Same Trek" active={filter === "same-trek"} onClick={() => setFilter("same-trek")} />
+            <FilterBadge label="Same City" active={filter === "same-city"} onClick={() => setFilter("same-city")} />
+          </div>
         </div>
       </div>
 
       {/* Matches list */}
-      <main className="max-w-3xl mx-auto px-6 py-6">
+      <main className="max-w-[1008px] mx-auto px-6 py-6">
         {loading && (
-          <div className="text-center py-16 text-muted-foreground">Finding your matches…</div>
+          <div className="text-center py-16 text-[#4A5F5B]">Finding your matches…</div>
         )}
 
         {error && (
@@ -195,13 +190,13 @@ export default function MatchesPage() {
         )}
 
         {sendError && (
-          <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm text-destructive">
+          <div className="mb-4 rounded-xl border border-[#F6C6C6] bg-[#FDEAEA] px-4 py-2.5 text-sm text-[#B42318]">
             {sendError}
           </div>
         )}
 
         {!loading && !error && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {visibleMatches.map((match) => (
               <CompatibilityCard
                 key={match.id}
@@ -214,8 +209,13 @@ export default function MatchesPage() {
                 vibeSummary={vibePanel(vibes[match.id])}
                 actions={
                   match.connectionSent ? (
-                    <Button size="sm" variant="outline" disabled className="gap-1">
-                      <Check className="w-4 h-4" />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled
+                      className={`${actionButtonClass} border-[#D5E0DC] text-[#4A5F5B]`}
+                    >
+                      <Check className="size-4 sm:size-5" />
                       Sent
                     </Button>
                   ) : (
@@ -223,22 +223,22 @@ export default function MatchesPage() {
                       size="sm"
                       onClick={() => sendConnection(match.id)}
                       disabled={sendingTo === match.id}
-                      className="gap-1"
+                      className={`${actionButtonClass} bg-meadow hover:bg-meadow/90`}
                     >
-                      <Heart className="w-4 h-4" />
+                      <Heart className="size-4 sm:size-5" />
                       {sendingTo === match.id ? "Sending…" : "Connect"}
                     </Button>
                   )
                 }
                 expandedFooter={
                   !match.connectionSent && (
-                    <div className="mt-6 pt-4 border-t border-border">
+                    <div className="mt-[22px]">
                       <Button
                         onClick={() => sendConnection(match.id)}
                         disabled={sendingTo === match.id}
-                        className="w-full gap-2"
+                        className="w-full h-[50px] rounded-xl gap-2 text-[15px] font-bold bg-forest text-lime hover:bg-forest/90"
                       >
-                        <MessageCircle className="w-4 h-4" />
+                        <MessageCircle className="size-5" />
                         {sendingTo === match.id ? "Sending…" : "Send Request"}
                       </Button>
                     </div>
@@ -252,11 +252,11 @@ export default function MatchesPage() {
         {/* Empty state placeholder */}
         {!loading && !error && visibleMatches.length === 0 && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-              <Mountain className="w-8 h-8 text-muted-foreground" />
+            <div className="w-16 h-16 rounded-full bg-white shadow-[0_10px_24px_rgba(11,26,60,0.1)] flex items-center justify-center mx-auto mb-4">
+              <Mountain className="w-8 h-8 text-meadow" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">No matches yet</h3>
-            <p className="text-muted-foreground mb-6">
+            <h3 className="type-display text-2xl mb-2">No matches yet</h3>
+            <p className="text-[#4A5F5B] mb-6">
               {matches.length === 0
                 ? "We haven't found other trekkers heading to your destination yet — check back soon."
                 : "No matches fit this filter yet — try a different one."}
@@ -279,7 +279,11 @@ function FilterBadge({ label, active, onClick }: { label: string; active: boolea
     <Badge
       variant={active ? "secondary" : "outline"}
       onClick={onClick}
-      className={`whitespace-nowrap cursor-pointer ${active ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}
+      className={`whitespace-nowrap cursor-pointer px-4 py-2 rounded-full border text-sm transition-colors ${
+        active
+          ? "bg-forest border-forest text-lime font-bold"
+          : "bg-white border-[#D5E0DC] text-forest font-medium hover:border-forest/40"
+      }`}
     >
       {label}
     </Badge>

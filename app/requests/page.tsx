@@ -6,9 +6,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Mountain, Check, X, Clock, Copy } from "lucide-react"
+import { Mountain, Check, X, Clock, Copy } from "lucide-react"
 import { supabase } from "@/lib/supabase/client"
+import { AppHeader } from "@/components/app-header"
 import { CompatibilityCard, buildSignals, type MatchSignal } from "@/components/compatibility-card"
+
+const actionButtonClass = "h-10 sm:h-11 px-3 sm:px-5 has-[>svg]:px-3 sm:has-[>svg]:px-5 rounded-xl gap-1.5 sm:gap-2 text-sm sm:text-[15px] font-bold"
+const tabClass =
+  "flex-none h-auto px-3 sm:px-[18px] py-2.5 rounded-[10px] border-0 text-sm sm:text-[15px] font-medium text-white/80 data-[state=active]:bg-lime data-[state=active]:text-forest data-[state=active]:font-bold data-[state=active]:shadow-none"
 
 type ConnectionRequest = {
   id: string
@@ -103,46 +108,40 @@ export default function RequestsPage() {
   const receivedPendingCount = received.filter(r => r.status === "pending").length
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/matches" className="p-2 -ml-2 hover:bg-muted rounded-lg transition-colors">
-              <ArrowLeft className="w-5 h-5 text-foreground" />
-            </Link>
-            <div>
-              <h1 className="font-bold text-foreground">Connection Requests</h1>
-              <p className="text-sm text-muted-foreground">
-                {receivedPendingCount > 0 ? `${receivedPendingCount} waiting on you` : "You're all caught up"}
-              </p>
-            </div>
-          </div>
-          <Mountain className="w-6 h-6 text-primary" />
-        </div>
-      </header>
+    <div className="bg-app-daylight min-h-screen text-forest">
+      <AppHeader
+        backHref="/matches"
+        title="Connection Requests"
+        subtitle={receivedPendingCount > 0 ? `${receivedPendingCount} waiting on you` : "You're all caught up"}
+        className="sticky top-0 z-50"
+      >
+        <Link href="/" aria-label="SoloSaathi home" className="shrink-0 flex items-center">
+          <Mountain className="size-6 sm:size-7 text-lime" />
+        </Link>
+      </AppHeader>
 
-      <main className="max-w-3xl mx-auto px-6 py-6">
+      <main className="max-w-[1008px] mx-auto px-6 py-6">
         {loading && (
-          <div className="text-center py-16 text-muted-foreground">Loading requests…</div>
+          <div className="text-center py-16 text-[#4A5F5B]">Loading requests…</div>
         )}
 
         {error && (
-          <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-2 text-sm text-destructive">
+          <div className="mb-4 rounded-xl border border-[#F6C6C6] bg-[#FDEAEA] px-4 py-2.5 text-sm text-[#B42318]">
             {error}
           </div>
         )}
 
         {!loading && (
-          <Tabs defaultValue="received">
-            <TabsList className="mb-4">
-              <TabsTrigger value="received">Received ({received.length})</TabsTrigger>
-              <TabsTrigger value="sent">Sent ({sent.length})</TabsTrigger>
-              <TabsTrigger value="accepted">Accepted ({accepted.length})</TabsTrigger>
+          <Tabs defaultValue="received" className="gap-6">
+            <TabsList className="h-auto gap-1 p-[5px] rounded-[14px] bg-forest shadow-[0_10px_24px_rgba(6,38,29,0.2)] max-w-full overflow-x-auto justify-start">
+              <TabsTrigger value="received" className={tabClass}>Received ({received.length})</TabsTrigger>
+              <TabsTrigger value="sent" className={tabClass}>Sent ({sent.length})</TabsTrigger>
+              <TabsTrigger value="accepted" className={tabClass}>Accepted ({accepted.length})</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="received" className="space-y-4">
+            <TabsContent value="received" className="space-y-5">
               {received.length === 0 && (
-                <EmptyState text="No one's sent you a connection request yet." />
+                <EmptyState text="No one has sent you any connection request yet" />
               )}
               {received.map((r) => (
                 <CompatibilityCard
@@ -157,14 +156,14 @@ export default function RequestsPage() {
                     r.status === "declined" ? (
                       <StatusBadge status="declined" />
                     ) : (
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 sm:gap-2.5">
                         <Button
                           size="sm"
                           onClick={() => respond(r.id, "accepted")}
                           disabled={respondingTo === r.id}
-                          className="gap-1"
+                          className={`${actionButtonClass} bg-meadow hover:bg-meadow/90`}
                         >
-                          <Check className="w-4 h-4" />
+                          <Check className="size-4 sm:size-5" />
                           Accept
                         </Button>
                         <Button
@@ -172,9 +171,9 @@ export default function RequestsPage() {
                           variant="outline"
                           onClick={() => respond(r.id, "declined")}
                           disabled={respondingTo === r.id}
-                          className="gap-1"
+                          className={`${actionButtonClass} border-[#D5E0DC] bg-white text-forest hover:bg-[#F3F7F5] hover:text-forest`}
                         >
-                          <X className="w-4 h-4" />
+                          <X className="size-4 sm:size-5" />
                           Decline
                         </Button>
                       </div>
@@ -184,9 +183,9 @@ export default function RequestsPage() {
               ))}
             </TabsContent>
 
-            <TabsContent value="sent" className="space-y-4">
+            <TabsContent value="sent" className="space-y-5">
               {sent.length === 0 && (
-                <EmptyState text="You haven't sent any connection requests yet." />
+                <EmptyState text="You haven't sent any connection request yet" />
               )}
               {sent.map((r) => (
                 <CompatibilityCard
@@ -202,9 +201,9 @@ export default function RequestsPage() {
               ))}
             </TabsContent>
 
-            <TabsContent value="accepted" className="space-y-4">
+            <TabsContent value="accepted" className="space-y-5">
               {accepted.length === 0 && (
-                <EmptyState text="No connections yet — accepted requests (either direction) will show up here with a way to reach them." />
+                <EmptyState text="You haven't accepted any connection request yet" />
               )}
               {accepted.map((r) => (
                 <CompatibilityCard
@@ -229,27 +228,29 @@ export default function RequestsPage() {
 function StatusBadge({ status }: { status: "pending" | "declined" }) {
   if (status === "declined") {
     return (
-      <Badge className="gap-1 bg-red-100 text-red-700 border-red-200" variant="outline">
-        <X className="w-3 h-3" />
+      <Badge className={`${statusBadgeClass} bg-[#FDEAEA] text-[#B42318] border-[#F6C6C6]`} variant="outline">
+        <X />
         Declined
       </Badge>
     )
   }
   return (
-    <Badge className="gap-1 bg-yellow-100 text-yellow-700 border-yellow-200" variant="outline">
-      <Clock className="w-3 h-3" />
+    <Badge className={`${statusBadgeClass} bg-[#FFF1D6] text-[#8A5208] border-marigold`} variant="outline">
+      <Clock />
       Pending
     </Badge>
   )
 }
 
+const statusBadgeClass = "gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold [&>svg]:size-4"
+
 function EmptyState({ text }: { text: string }) {
   return (
     <div className="text-center py-16">
-      <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-        <Mountain className="w-8 h-8 text-muted-foreground" />
+      <div className="w-16 h-16 rounded-full bg-white shadow-[0_10px_24px_rgba(11,26,60,0.1)] flex items-center justify-center mx-auto mb-4">
+        <Mountain className="w-8 h-8 text-meadow" />
       </div>
-      <p className="text-muted-foreground max-w-sm mx-auto">{text}</p>
+      <p className="text-[#4A5F5B] max-w-sm mx-auto">{text}</p>
     </div>
   )
 }
@@ -269,12 +270,12 @@ function EmailCopyAction({ email }: { email: string }) {
     <button
       onClick={copy}
       title={email}
-      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border bg-muted/50 hover:bg-muted text-xs font-medium text-foreground transition-colors max-w-[170px]"
+      className="flex items-center gap-1.5 h-11 px-3.5 rounded-xl border border-[#D5E0DC] bg-[#F3F7F5] hover:bg-[#E7EFEB] text-[13px] font-semibold text-forest transition-colors max-w-[200px]"
     >
       {copied ? (
-        <Check className="w-3.5 h-3.5 text-green-600 shrink-0" />
+        <Check className="size-4 text-meadow shrink-0" />
       ) : (
-        <Copy className="w-3.5 h-3.5 shrink-0" />
+        <Copy className="size-4 shrink-0" />
       )}
       <span className="truncate">{copied ? "Copied!" : email}</span>
     </button>

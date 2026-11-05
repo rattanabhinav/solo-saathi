@@ -123,3 +123,133 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ------------------------------------------------------------------
+   Homepage palette (Oct 2026 revamp)
+   Hex values are copied straight from the Claude Design mockup so they
+   can be checked side by side. Each becomes a Tailwind colour, e.g.
+   --color-forest -> bg-forest, text-forest, border-forest/40.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-forest: #06261D;   /* deep pine: dark sections, text on light ones */
+  --color-lime: #B8F26B;     /* signature accent: CTAs, italic headline lines */
+  --color-marigold: #FFC15E; /* warm accent: badges, stats */
+  --color-glacier: #8FD3FF;  /* cool accent: icon tiles */
+  --color-meadow: #058561;   /* match-card green */
+  --color-night: #0B1A3C;    /* night sky */
+  --color-ember: #FF7A45;    /* step 01 */
+  --color-rhodo: #E5486B;    /* step 02 (rhododendron pink) */
+  --color-dusk: #6B4BC4;     /* step 03 */
+  --color-coral: #FF8A6B;
+  --color-salmon: #FFA38A;
+  --color-lilac: #C9B8FF;
+}
+
+@layer components {
+  /* Condensed, heavy, all-caps headline style used across the homepage.
+     It lives in the "components" layer so a utility class (e.g.
+     normal-case on the logo) can still override a single property. */
+  .type-display {
+    font-family: var(--font-archivo), 'Inter', system-ui, sans-serif;
+    font-stretch: 75%;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  /* Small spaced-out label above each section heading ("THE PROBLEM") */
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* Tibetan prayer-flag strip along the top edge of the light sections */
+  .prayer-flags {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 22px;
+    border-top: 2px solid rgb(6 38 29 / 0.35);
+    background: repeating-linear-gradient(90deg, #2E6FD8 0 26px, transparent 26px 34px, #fff 34px 60px, transparent 60px 68px, #E0453A 68px 94px, transparent 94px 102px, #2FA05A 102px 128px, transparent 128px 136px, #F5C22E 136px 162px, transparent 162px 170px);
+  }
+
+  /* Rising-sun glow that sits behind the mountain ridges */
+  .sun-glow {
+    border-radius: 9999px;
+    background: radial-gradient(circle, #FFE9A8 0%, #FFB347 30%, rgb(255 138 61 / 0) 68%);
+  }
+
+  /* Section backgrounds, top of the page to the bottom. The tiny
+     radial-gradients at the start of the night skies are the stars. */
+  .bg-hero-sky {
+    background:
+      radial-gradient(1.5px 1.5px at 12% 14%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 28% 7%, #fff, transparent),
+      radial-gradient(2px 2px at 44% 20%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 63% 6%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 81% 17%, #fff, transparent),
+      radial-gradient(2px 2px at 93% 9%, #fff, transparent),
+      linear-gradient(180deg, #0B1A3C 0%, #2B2366 28%, #8E3A7C 50%, #E8613F 70%, #FFB44F 88%);
+  }
+  .bg-vibe-meadow {
+    background:
+      radial-gradient(circle at 86% 18%, rgb(184 242 107 / 0.4), transparent 36%),
+      radial-gradient(circle at 6% 60%, rgb(19 169 139 / 0.55), transparent 42%),
+      linear-gradient(180deg, #06261D 0%, #045A43 30%, #058561 62%, #0FA58B 100%);
+  }
+  .bg-trail-daylight {
+    background: linear-gradient(180deg, #CFEAF7 0%, #EAF5FB 55%, #FFE9D4 100%);
+  }
+  .bg-sunset-blaze {
+    background: linear-gradient(135deg, #C2410C 0%, #BE2650 55%, #6D1F5E 100%);
+  }
+  .bg-night-camp {
+    background:
+      radial-gradient(1.5px 1.5px at 8% 20%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 22% 70%, #fff, transparent),
+      radial-gradient(2px 2px at 55% 12%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 76% 82%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 90% 30%, #fff, transparent),
+      linear-gradient(180deg, #0B1A3C, #18245A);
+  }
+  .bg-campfire {
+    background: linear-gradient(180deg, #FFF0DF 0%, #FFD9BF 100%);
+  }
+  .bg-dusk-sky {
+    background: linear-gradient(180deg, #1E1B52 0%, #6B2F78 50%, #C8485E 80%, #F08A4B 100%);
+  }
+
+  /* App pages (Oct 2026 revamp) */
+
+  /* /create-profile: deep forest with a sunrise glow at the top. The fixed
+     header paints this same background, so the glow continues seamlessly
+     behind it. */
+  .bg-onboarding {
+    background:
+      radial-gradient(ellipse 760px 280px at 50% -60px, rgb(255 138 61 / 0.38), transparent 70%),
+      #06261D;
+  }
+  /* /matches and /requests: soft daylight page under a dusk-sky header */
+  .bg-app-daylight {
+    background: linear-gradient(180deg, #EAF5FB 0%, #F3F8FB 55%, #FFEBD9 100%);
+  }
+  .bg-app-dusk {
+    background:
+      radial-gradient(1.5px 1.5px at 18% 22%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 72% 14%, #fff, transparent),
+      radial-gradient(2px 2px at 86% 40%, #fff, transparent),
+      linear-gradient(180deg, #0B1A3C 0%, #2B2366 45%, #8E3A7C 82%, #C2456B 100%);
+  }
+
+  /* /auth: the homepage's night-to-sunrise sky */
+  .bg-auth-sky {
+    background:
+      radial-gradient(1.5px 1.5px at 12% 14%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 30% 8%, #fff, transparent),
+      radial-gradient(2px 2px at 70% 12%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 88% 20%, #fff, transparent),
+      linear-gradient(180deg, #0B1A3C 0%, #2B2366 30%, #8E3A7C 54%, #E8613F 76%, #FFB44F 92%);
+  }
+}
