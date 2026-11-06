@@ -26,7 +26,7 @@ type Match = {
 
 type FilterKey = "all" | "80plus" | "same-trek" | "same-city"
 
-const actionButtonClass = "h-10 sm:h-11 px-3 sm:px-5 has-[>svg]:px-3 sm:has-[>svg]:px-5 rounded-xl gap-1.5 sm:gap-2 text-sm sm:text-[15px] font-bold"
+const actionButtonClass = "h-11 px-[18px] sm:px-5 has-[>svg]:px-[18px] sm:has-[>svg]:px-5 rounded-xl gap-2 text-[15px] font-bold leading-[calc(1.25/0.875)]"
 
 export default function MatchesPage() {
   const router = useRouter()
@@ -180,7 +180,7 @@ export default function MatchesPage() {
       </div>
 
       {/* Matches list */}
-      <main className="max-w-[1008px] mx-auto px-6 py-6">
+      <main className="max-w-[1008px] mx-auto px-6 pt-[18px] pb-6 sm:pt-6">
         {loading && (
           <div className="text-center py-16 text-[#4A5F5B]">Finding your matches…</div>
         )}
@@ -195,8 +195,9 @@ export default function MatchesPage() {
           </div>
         )}
 
+        {/* On phones the cards sit 16px from the screen edge (mobile mockup); the header and filters keep their 24px */}
         {!loading && !error && (
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5 -mx-2 sm:mx-0">
             {visibleMatches.map((match) => (
               <CompatibilityCard
                 key={match.id}
@@ -215,7 +216,7 @@ export default function MatchesPage() {
                       disabled
                       className={`${actionButtonClass} border-[#D5E0DC] text-[#4A5F5B]`}
                     >
-                      <Check className="size-4 sm:size-5" />
+                      <Check className="size-5" />
                       Sent
                     </Button>
                   ) : (
@@ -225,14 +226,14 @@ export default function MatchesPage() {
                       disabled={sendingTo === match.id}
                       className={`${actionButtonClass} bg-meadow hover:bg-meadow/90`}
                     >
-                      <Heart className="size-4 sm:size-5" />
+                      <Heart className="size-5" />
                       {sendingTo === match.id ? "Sending…" : "Connect"}
                     </Button>
                   )
                 }
                 expandedFooter={
                   !match.connectionSent && (
-                    <div className="mt-[22px]">
+                    <div className="mt-5 sm:mt-[22px]">
                       <Button
                         onClick={() => sendConnection(match.id)}
                         disabled={sendingTo === match.id}

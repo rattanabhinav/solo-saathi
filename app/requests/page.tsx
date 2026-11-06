@@ -11,7 +11,8 @@ import { supabase } from "@/lib/supabase/client"
 import { AppHeader } from "@/components/app-header"
 import { CompatibilityCard, buildSignals, type MatchSignal } from "@/components/compatibility-card"
 
-const actionButtonClass = "h-10 sm:h-11 px-3 sm:px-5 has-[>svg]:px-3 sm:has-[>svg]:px-5 rounded-xl gap-1.5 sm:gap-2 text-sm sm:text-[15px] font-bold"
+// Narrower side padding on phones so Accept + Decline + More fit across a phone-width card
+const actionButtonClass = "h-11 px-3.5 sm:px-5 has-[>svg]:px-3.5 sm:has-[>svg]:px-5 rounded-xl gap-2 text-[15px] font-bold leading-[calc(1.25/0.875)]"
 const tabClass =
   "flex-none h-auto px-3 sm:px-[18px] py-2.5 rounded-[10px] border-0 text-sm sm:text-[15px] font-medium text-white/80 data-[state=active]:bg-lime data-[state=active]:text-forest data-[state=active]:font-bold data-[state=active]:shadow-none"
 
@@ -132,14 +133,15 @@ export default function RequestsPage() {
         )}
 
         {!loading && (
-          <Tabs defaultValue="received" className="gap-6">
+          <Tabs defaultValue="received" className="gap-[18px] sm:gap-6">
             <TabsList className="h-auto gap-1 p-[5px] rounded-[14px] bg-forest shadow-[0_10px_24px_rgba(6,38,29,0.2)] max-w-full overflow-x-auto justify-start">
               <TabsTrigger value="received" className={tabClass}>Received ({received.length})</TabsTrigger>
               <TabsTrigger value="sent" className={tabClass}>Sent ({sent.length})</TabsTrigger>
               <TabsTrigger value="accepted" className={tabClass}>Accepted ({accepted.length})</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="received" className="space-y-5">
+            {/* On phones the cards sit 16px from the screen edge (mobile mockup); the header and tabs keep their 24px */}
+            <TabsContent value="received" className="space-y-4 sm:space-y-5 -mx-2 sm:mx-0">
               {received.length === 0 && (
                 <EmptyState text="No one has sent you any connection request yet" />
               )}
@@ -163,7 +165,7 @@ export default function RequestsPage() {
                           disabled={respondingTo === r.id}
                           className={`${actionButtonClass} bg-meadow hover:bg-meadow/90`}
                         >
-                          <Check className="size-4 sm:size-5" />
+                          <Check className="size-5" />
                           Accept
                         </Button>
                         <Button
@@ -173,7 +175,7 @@ export default function RequestsPage() {
                           disabled={respondingTo === r.id}
                           className={`${actionButtonClass} border-[#D5E0DC] bg-white text-forest hover:bg-[#F3F7F5] hover:text-forest`}
                         >
-                          <X className="size-4 sm:size-5" />
+                          <X className="size-5" />
                           Decline
                         </Button>
                       </div>
@@ -183,7 +185,7 @@ export default function RequestsPage() {
               ))}
             </TabsContent>
 
-            <TabsContent value="sent" className="space-y-5">
+            <TabsContent value="sent" className="space-y-4 sm:space-y-5 -mx-2 sm:mx-0">
               {sent.length === 0 && (
                 <EmptyState text="You haven't sent any connection request yet" />
               )}
@@ -201,7 +203,7 @@ export default function RequestsPage() {
               ))}
             </TabsContent>
 
-            <TabsContent value="accepted" className="space-y-5">
+            <TabsContent value="accepted" className="space-y-4 sm:space-y-5 -mx-2 sm:mx-0">
               {accepted.length === 0 && (
                 <EmptyState text="You haven't accepted any connection request yet" />
               )}

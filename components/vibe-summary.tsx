@@ -18,7 +18,7 @@ export function VibeSummary({ summary }: { summary: string | null }) {
       className="rounded-[14px] border-[1.5px] border-meadow bg-[#F0FAF5] shadow-[0_0_0_4px_rgba(5,133,97,0.12)]"
     >
       <AccordionItem value="vibe" className="border-b-0">
-        <AccordionTrigger className="items-center min-h-12 px-4 py-0 hover:no-underline [&>svg]:size-5 [&>svg]:translate-y-0 [&>svg]:text-gray-500">
+        <AccordionTrigger className="items-center min-h-12 px-3.5 sm:px-4 py-0 hover:no-underline [&>svg]:size-5 [&>svg]:translate-y-0 [&>svg]:text-gray-500">
           <span className="flex items-center gap-2.5">
             <span className="flex size-7 shrink-0 items-center justify-center rounded-[9px] bg-meadow text-white">
               <AiSparkleIcon className="size-4" />
@@ -26,7 +26,7 @@ export function VibeSummary({ summary }: { summary: string | null }) {
             <span className="text-[15px] font-semibold text-gray-900">Why you may vibe</span>
           </span>
         </AccordionTrigger>
-        <AccordionContent className="px-4 pb-3.5" aria-busy={loading}>
+        <AccordionContent className="px-3.5 sm:px-4 pb-3.5" aria-busy={loading}>
           {loading ? (
             <div className="space-y-2">
               <Skeleton className="h-3.5 w-full bg-meadow/10" />

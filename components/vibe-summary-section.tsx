@@ -38,7 +38,7 @@ const previewMatches = [
 
 // Same Connect button as on /matches
 const connectButtonClass =
-  "h-10 sm:h-11 px-3 sm:px-5 has-[>svg]:px-3 sm:has-[>svg]:px-5 rounded-xl gap-1.5 sm:gap-2 text-sm sm:text-[15px] font-bold bg-meadow hover:bg-meadow/90"
+  "h-11 px-[18px] sm:px-5 has-[>svg]:px-[18px] sm:has-[>svg]:px-5 rounded-xl gap-2 text-[15px] font-bold leading-[calc(1.25/0.875)] bg-meadow hover:bg-meadow/90"
 
 export function VibeSummarySection() {
   return (
@@ -124,7 +124,7 @@ export function VibeSummarySection() {
                   vibeSummary={match.summary ? <VibeSummary summary={match.summary} /> : undefined}
                   actions={
                     <Button size="sm" className={connectButtonClass}>
-                      <Heart className="size-4 sm:size-5" />
+                      <Heart className="size-5" />
                       Connect
                     </Button>
                   }

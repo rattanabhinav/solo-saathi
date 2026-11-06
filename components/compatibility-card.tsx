@@ -82,7 +82,7 @@ function SignalPill({ signal }: { signal: MatchSignal }) {
   }
 
   return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] border whitespace-nowrap ${colors[getScoreTier(signal.score)]}`}>
+    <div className={`inline-flex items-center gap-1.5 px-[11px] sm:px-3 py-1 rounded-full text-[13px] border whitespace-nowrap ${colors[getScoreTier(signal.score)]}`}>
       <signal.icon className="size-3.5" />
       <span>{signal.label}</span>
       <span className="font-bold">{Math.round(signal.score)}%</span>
@@ -104,19 +104,19 @@ function SignalRow({ signal }: { signal: MatchSignal }) {
   const tier = getScoreTier(signal.score)
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex items-center gap-3 w-40 sm:w-[180px] shrink-0">
-        <signal.icon className="size-[18px] shrink-0 text-[#4A5F5B]" />
-        <span className="text-[15px] text-[#1F2D2A]">{signal.label}</span>
+    <div className="flex items-center gap-2.5 sm:gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3 w-[151px] sm:w-[180px] shrink-0">
+        <signal.icon className="size-[17px] sm:size-[18px] shrink-0 text-[#4A5F5B]" />
+        <span className="text-[14px] sm:text-[15px] text-[#1F2D2A]">{signal.label}</span>
       </div>
-      <div className="flex-1 flex items-center gap-3">
+      <div className="flex-1 flex items-center gap-2.5 sm:gap-3">
         <div className="flex-1 h-2 bg-[#E3EAEF] rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all ${barColors[tier]}`}
             style={{ width: `${signal.score}%` }}
           />
         </div>
-        <span className={`text-[15px] font-bold w-[46px] text-right ${textColors[tier]}`}>
+        <span className={`text-[14px] sm:text-[15px] font-bold w-[42px] sm:w-[46px] text-right ${textColors[tier]}`}>
           {Math.round(signal.score)}%
         </span>
       </div>
@@ -151,28 +151,29 @@ export function CompatibilityCard({
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <Card className="gap-0 py-0 overflow-hidden rounded-[22px] border-0 text-forest shadow-[0_18px_40px_rgba(11,26,60,0.12)] hover:shadow-[0_22px_48px_rgba(11,26,60,0.16)] transition-shadow">
+    // Phones (under 640px) follow the mobile mockup; wider screens the desktop one
+    <Card className="gap-0 py-0 overflow-hidden rounded-[20px] sm:rounded-[22px] border-0 text-forest shadow-[0_14px_32px_rgba(11,26,60,0.12)] sm:shadow-[0_18px_40px_rgba(11,26,60,0.12)] hover:shadow-[0_22px_48px_rgba(11,26,60,0.16)] transition-shadow">
       <CardContent className="p-0">
-        <div className="p-6 flex flex-col gap-3.5">
-          <div className="flex items-start gap-[18px]">
+        <div className="p-[18px] sm:p-6 flex flex-col gap-3.5">
+          <div className="flex items-start gap-3.5 sm:gap-[18px]">
             {/* Avatar inside a marigold → lime ring, score badge below it */}
-            <div className="relative shrink-0 size-16 rounded-full p-[3px] bg-[linear-gradient(135deg,#FFC15E,#B8F26B)]">
+            <div className="relative shrink-0 size-[58px] sm:size-16 rounded-full p-[3px] bg-[linear-gradient(135deg,#FFC15E,#B8F26B)]">
               <Avatar className="size-full">
                 <AvatarImage src="" alt={name} />
-                <AvatarFallback className="bg-[#E3F2EC] text-meadow text-xl font-bold">
+                <AvatarFallback className="bg-[#E3F2EC] text-meadow text-lg sm:text-xl font-bold">
                   {name.split(" ").map(n => n[0]).join("")}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute left-1/2 -bottom-[9px] -translate-x-1/2 whitespace-nowrap bg-meadow text-white text-xs font-bold px-[9px] py-0.5 rounded-full border-2 border-white">
+              <div className="absolute left-1/2 -bottom-[9px] -translate-x-1/2 whitespace-nowrap bg-meadow text-white text-[11px] sm:text-xs font-bold px-2 sm:px-[9px] py-0.5 rounded-full border-2 border-white">
                 {overallScore}%
               </div>
             </div>
 
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
-                <h3 className="text-lg font-bold truncate max-w-full">{name}</h3>
+              <div className="flex flex-wrap items-center gap-x-[7px] sm:gap-x-2 gap-y-1 mt-1">
+                <h3 className="text-[17px] sm:text-lg font-bold truncate max-w-full">{name}</h3>
                 <span className="text-[15px] text-gray-500 shrink-0">{age}</span>
-                <Badge variant="outline" className="text-[13px] font-normal px-2.5 py-0.5 rounded-full border-gray-300 shrink-0">
+                <Badge variant="outline" className="text-[12px] sm:text-[13px] font-normal px-[9px] sm:px-2.5 py-0.5 rounded-full border-gray-300 shrink-0">
                   {city}
                 </Badge>
               </div>
@@ -196,22 +197,24 @@ export function CompatibilityCard({
 
           {vibeSummary && <div>{vibeSummary}</div>}
 
-          <div className="flex items-center justify-end gap-2 sm:gap-2.5">
+          {/* flex-wrap: on very narrow phones, More drops to its own line
+              instead of pushing the buttons off the card */}
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-2.5">
             {actions}
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setExpanded(prev => !prev)}
-              className="h-10 sm:h-11 px-2 sm:px-2.5 has-[>svg]:px-2 sm:has-[>svg]:px-2.5 gap-1 sm:gap-1.5 text-sm sm:text-[15px] text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              className="h-11 px-2 sm:px-2.5 has-[>svg]:px-2 sm:has-[>svg]:px-2.5 gap-2 sm:gap-1.5 text-[15px] leading-[calc(1.25/0.875)] text-gray-600 hover:bg-gray-100 hover:text-gray-900"
             >
               {expanded ? (
                 <>
-                  <ChevronUp className="size-4 sm:size-5" />
+                  <ChevronUp className="size-5" />
                   Less
                 </>
               ) : (
                 <>
-                  <ChevronDown className="size-4 sm:size-5" />
+                  <ChevronDown className="size-5" />
                   More
                 </>
               )}
@@ -220,8 +223,8 @@ export function CompatibilityCard({
         </div>
 
         {expanded && (
-          <div className="border-t border-[#E5E9EF] bg-[#F7FAFC] px-6 py-[22px] animate-in slide-in-from-top-2 duration-300">
-            <h4 className="type-display text-xl tracking-[0.02em] mb-4">Compatibility Breakdown</h4>
+          <div className="border-t border-[#E5E9EF] bg-[#F7FAFC] p-[18px] sm:px-6 sm:py-[22px] animate-in slide-in-from-top-2 duration-300">
+            <h4 className="type-display text-[19px] sm:text-xl tracking-[0.02em] mb-3.5 sm:mb-4">Compatibility Breakdown</h4>
             {/* One column on phones; on wider screens two columns of 5
                 (the 10 signals in SIGNAL_DEFS), filled top to bottom */}
             <div className="grid gap-3 md:grid-cols-2 md:grid-rows-5 md:grid-flow-col md:gap-x-10">
